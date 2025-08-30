@@ -1,5 +1,7 @@
 The following files are bash files that we will use in the Phylogenomics Workshop:
 
+00_00_headers_rename.sh - Remove all characters after first "|"
+
 01_gather_buscos.sh
 
 02_align.sh - MAFFT alignments
