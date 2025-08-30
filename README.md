@@ -1,0 +1,15 @@
+The following files are bash files that we will use in the Phylogenomics Workshop:
+
+01_gather_buscos.sh
+
+02_align.sh - MAFFT alignments
+
+03_trim.sh - TrimAL
+
+04_filter.sh - Filter sequences < x after trimming
+
+05_concat_iqtree.sh - Cancatenate datasets and generate a maximum likelihood tree using IQtree
+
+06_gene_trees.sh - Generate seperate genetrees, and then combine them in one file
+
+07_astral.sh - Generate a Supertree using ASTRAL or ASTER
