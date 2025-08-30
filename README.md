@@ -1,4 +1,4 @@
-The following files are bash files that we will use in the Phylogenomics Workshop:
+## The following files are bash files that we will use in the Phylogenomics Workshop:
 
 00_00_headers_rename.sh - Remove all characters after first "|"
 
@@ -16,6 +16,6 @@ The following files are bash files that we will use in the Phylogenomics Worksho
 
 07_astral.sh - Generate a Supertree using ASTRAL or ASTER
 
-DATASET: 
+## DATASET: 
 
 busco_data.zip
