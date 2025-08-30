@@ -15,3 +15,7 @@ The following files are bash files that we will use in the Phylogenomics Worksho
 06_gene_trees.sh - Generate seperate genetrees, and then combine them in one file
 
 07_astral.sh - Generate a Supertree using ASTRAL or ASTER
+
+DATASET: 
+
+busco_data.zip
