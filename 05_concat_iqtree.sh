@@ -30,6 +30,7 @@ fi
 
 # Run IQ-TREE on the directory of alignments
 "${IQTREE_BIN}" -S "$FILTER_DIR" -m MFP -bb 1000 -alrt 1000 -T "${THREADS}" -pre "$OUTROOT"
+#For a quicj check, use below
 #"${IQTREE_BIN}" -S "$FILTER_DIR" -m MFP -T "${THREADS}" -pre "$OUTROOT"
 
 echo "TREE in $OUTROOT"
