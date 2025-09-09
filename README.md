@@ -16,6 +16,8 @@
 
 07_astral.sh - Generate a Supertree using ASTRAL or ASTER
 
+10_msa_outlier.py - Python script that detects outliers in a MSA (this is a work in progress)
+
 ## DATASET: 
 
 busco_data.zip
