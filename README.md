@@ -18,6 +18,8 @@
 
 10_msa_outlier.py - Python script that detects outliers in a MSA (this is a work in progress)
 
+Note: All scripts to automate processess were developed by MPA Coetzee with the help of ChatGPT 5 (Thinking module)
+
 ## DATASET: 
 
 busco_data.zip
