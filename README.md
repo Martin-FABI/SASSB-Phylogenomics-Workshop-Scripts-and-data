@@ -21,3 +21,9 @@
 ## DATASET: 
 
 busco_data.zip
+
+## INFORMATION:
+
+Short versions of the code and other information are available in the file: Commdands_short_version.txt
+
+
