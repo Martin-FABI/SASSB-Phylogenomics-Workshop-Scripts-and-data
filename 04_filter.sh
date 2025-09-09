@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+#Developed by Martin Coetzee (University of Pretoria, Forestry and Acgricultural Biotechnology Insitute), with assistance from ChatGPT.
+
 set -euo pipefail
 
 INDIR=${INDIR:-alignments_trimmed}
