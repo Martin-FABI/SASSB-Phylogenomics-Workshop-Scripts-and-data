@@ -7,9 +7,9 @@ THREADS=${THREADS:-AUTO}
 
 mkdir -p "$OUTDIR"
 
-IQTREE_BIN=$(command -v iqtree2 || command -v iqtree || true)
+IQTREE_BIN=$(command -v iqtree3 || command -v iqtree2 || command -v iqtree || true)
 if [[ -z "${IQTREE_BIN}" ]]; then
-  echo "iqtree2/iqtree not found" >&2
+  echo "iqtree3/iqtree2/iqtree not found" >&2
   exit 1
 fi
 
@@ -26,22 +26,29 @@ fi
 
 shopt -s nullglob nocaseglob
 
+# Pick the correct threads flag for your iqtree version
+if "$IQTREE_BIN" -h 2>&1 | grep -qE '\-nt\b'; then
+  nt_flag=(-nt "$THREADS")
+else
+  nt_flag=(-T "$THREADS")
+fi
+
 # Process all accepted FASTA extensions (case-insensitive)
 for aln in "$FILTER_DIR"/*.fa "$FILTER_DIR"/*.faa "$FILTER_DIR"/*.fasta "$FILTER_DIR"/*.fas; do
   [[ -e "$aln" ]] || continue
   fname=$(basename "$aln")      # keep extension to avoid prefix collisions
   pre="$OUTDIR/${fname}"
   if [[ ! -s "${pre}.treefile" ]]; then
-    "${IQTREE_BIN}" -s "$aln" -m MFP -T "${THREADS}" -pre "$pre"
+    "$IQTREE_BIN" -s "$aln" -m MFP "${nt_flag[@]}" -pre "$pre"
   fi
 done
 
 # Concatenate results only if they exist
-if compgen -G "$OUTDIR"/*.treefile > /dev/null; then
+if compgen -G "$OUTDIR/*.treefile" > /dev/null; then
   cat "$OUTDIR"/*.treefile > "$OUTDIR/gene_trees.all.tre"
 fi
 
-if compgen -G "$OUTDIR"/*.ufboot > /dev/null; then
+if compgen -G "$OUTDIR/*.ufboot" > /dev/null; then
   cat "$OUTDIR"/*.ufboot > "$OUTDIR/gene_trees.ufboot.tre"
 fi
 
