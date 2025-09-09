@@ -1,0 +1,237 @@
+#------------------------------------------------
+# login
+#------------------------------------------------
+
+#user@wonko1.bi.up.ac.za
+#pwd will be given during the workshop
+
+#------------------------------------------------
+# Loadshedding? PC crash? Use screen or byobu
+#------------------------------------------------
+
+# If you use byobu:
+	To create a named session:  
+		byobu new -s <session-name> creates a named session.
+	To create two byobu terminal windows that are independent:
+  		byobu new -s newSession
+  		
+# If you use screen:
+
+	To start a new named session:
+		screen -S file
+	
+	To list all running and detached screen sessions:
+		screen -ls
+	
+	To detach from a screen without closing it:
+		screen -d name (e.g. 1643)
+
+	To reattach to a screen session:
+		screen -r name (e.g. 1643)
+		 
+  		
+#All the commands were tested on Mac - might need to adjust for other Linux versions
+
+
+#-------------------------------------------------------------------------------#
+#																				# 
+#							Getting things ready								#
+#																				#		
+--------------------------------------------------------------------------------#
+
+
+
+#------------------------------------------------
+# Running software on wonko1
+#------------------------------------------------
+
+# To see if a program is installed, you can type: module avail
+# To load a program, type: module load programme_name. For example: module load bioawk
+# After a programme is loaded, you can use it by calling its name directly on the terminal.
+  		
+#------------------------------------------------
+# Preparing your data pre- and post-alignment
+#------------------------------------------------
+
+
+# some useful commands
+	count files in folder: ls | wc -l
+  		
+# Removing words after first space in header line
+	sed '/^>/ s/ .*//' file.fasta > newfilename
+	awk '/^>/ {$0=$1} 1' file.fasta > newfilename
+	for filename in *.fas; do sed '/^>/ s/ .*//' $filename > ${filename%}.edit.fas; done
+	
+# If you want to count the number of headers in all the files and output to text
+	grep -c ">" *.fas > count.txt
+	# or if ">" might be present more than once, then
+		grep -c "^>" FILENAME
+		
+			
+# If you want to remove duplicates (i.e. same name headers) and move the file
+
+	for i in *.fasta; do awk '{ if (($0 ~ /^>/) && (!seen[$0]++)) { print $0; printSeq=1; } else if (($0 ~ /^[^>]/) && printSeq) {print $0; printSeq=0; }  }' $i > ${i%%.fasta}.new.fasta; mv *.new.fasta Folderwithnodup/; done
+	
+	# for the above, you must create a folder in which the sequences are going to be moved - the name should then be used in the line
+
+
+#-------------------------------------------------------------------------------#
+#																				# 
+#							Phylogenomic analyses								#
+#																				#		
+--------------------------------------------------------------------------------#
+
+
+#------------------------------------------------
+# MAFFT - sequence alignment
+#------------------------------------------------
+	mafft --thread 2 --reorder --adjustdirection --maxiterate 1000 --auto filename > outputfile
+	
+	for filename in *.fas; do mafft --thread 2 --reorder --adjustdirection --maxiterate 1000 --auto $filename > ${filename%}.aligned.fas; done
+	
+	# Mac - linux
+		# for file  in *.edit.fas; do mafft --auto $file > ${file}.align.fas; done
+	
+	# might need to tweak the above - copy and paste sometimes gives problems
+	
+	
+#------------------------------------------------
+# TrimAL - trim gappy alignments
+#------------------------------------------------
+	for file in *.XXX;  do trimal -gappyout -in $file -out ${file%%.fasta}_trim.fasta; done
+
+
+#------------------------------------------------
+# Removing short alignments (n<x)
+#------------------------------------------------
+	
+# If you want to remove files with alignments less than a certain length using bioawk (it must be installed)
+	mkdir filtered
+	for f in *.fas; do if [[ $(bioawk -c fastx '{print length($seq)}' $f | head -1 )  -gt 200 ]] ; then cp $f filtered ; fi; done
+ 		 #filter for files > 199 aa from trimmed file
+			for f in *.fas; do if [[ $(bioawk -c fastx '{print length($seq)}' $f | head -1 )  -gt 199 ]] ; then cp $f directory; fi; done
+	
+	
+#------------------------------------------------
+# FASconCAT_G - generate single concatenate file
+#------------------------------------------------
+	# Need perl installed 
+	# Concatenate sequence alignment files into one file
+	# Different formats can be generated
+	# Make sure that you select  PARTITION FILE : Supermatrix
+	# Also select the Bayesian block
+	# File must be in the same folder as the sequence files unless a path is specified
+	# Execute from the terminal / commmand prompt, do not double click
+	
+	perl FASconCAT_G.pl
+	
+#------------------------------------------------
+# THE PHYLOGENETIC ANALYSES
+# 	- ML phylogenetic tree using IQtree
+# 		* Species tree based on concatenated data
+# 		* Gene trees for Astral
+#	- Coalescence-based tree using Astral
+#------------------------------------------------
+
+
+# THE COMMANDS BELOW ARE FOR V2.X - SEE WEB FOR VERSION 1.X
+
+#Inferring a species tree:
+#----------------------------
+
+
+	#	Straightforward analyses on one gene
+	#  -s to specify the file name
+	#  -m is the model setting; in this case, the program will determine the model(s) for you.
+	#  -B for ultra-fast bootstrap with 1000 reps
+	#  -b for proper bootststrap
+	#  -alrt for SH-aLRT test
+	#  MFP = modelfinder, use -m TESTONLY to resemble jModelTest/ProtTest
+	#  MFP will be automatically done, if you do not specify a specific model
+
+	iqtree -s sequence_filename -m MFP -B 1000 -alrt 1000
+
+
+# With concatenated dataset from FASTConcat-G:
+	# file can be in RAXML format, or in nexus - the latter is preferred
+	# use -p with the partition file name, this will allow each partition to have its own model as determined from MFP
+
+	iqtree -s sequence_filename -p partition_filename -m MFP -B 1000 -alrt 1000
+	
+	# the output will give you a file with model_scheme.nex as part of the file, in the next rounds you can use this as the partition file
+
+# One can also perform the PartitionFinder algorithm (Lanfear et al., 2012) that tries to merge partitions to reduce the potential over-parameterisation
+	# -m MFP+MERGE
+	# -rcluster 10 to reduce computations by only examining the top 10% partitioning schemes using the relaxed clustering algorithm (Lanfear et al., 2014).
+	# --prefix agaric.merge to set the prefix for all output files as turtle.merge.*. This is to avoid overwriting outputs from the previous analysis.
+
+	iqtree2 -s sequence_filename -p partition_filename -B 1000 -alrt 1000 -T AUTO -m MFP+MERGE -rcluster 10 --prefix file.merge
+
+# You can also do a test only for the substitution model - no phylogenetic inference
+	iqtree -s filename -m TESTONLY
+	
+# With more than one dataset not yet concatenated
+	#	IQ-TREE 2 provides a new convenient feature: if you have a directory with many aligned loci, you can specify this directory directly with -p option
+	# 	using -p also allows each partition to have its own evolutionary rate (specify an edge-linked proportional partition model). There is one set of branch lengths, but each partition can have proportionally shorter or longer tree length, representing slow or fast evolutionary rate, respectively.
+	#	The model for each partition will be determined by default
+	#	To do bootstrap, add -b 1000 or -B 1000 for ultra-fast bootstrap
+	#   Add -alrt if ultra-fast bootstrap is used
+	# 	The -- prefix is used to make the files informative
+	# 	-T auto is used to determine the optimum processors
+ 
+	iqtree2 -p sequence_directory --prefix concat -B 1000 -alrt 1000 -T AUTO
+	
+# In addition to the above, it can also give you the concatenated sequence alignment in one file
+	#	Please note that the argument after the option '-p' should be the NEXUS file. 
+	#	You may refer to the section "Partitioned analysis with mixed data" at http://www.iqtree.org/doc/Advanced-Tutorial for more information
+	
+
+	iqtree2 -p [NEXUS partition file] -wca --prefix concat -T auto
+
+	
+#Inferring gene/locus trees:
+#----------------------------
+
+	#This can also be done in a loop - if you want gene file names
+	
+	iqtree2 -s sequence_filename -S PARTITION_FILE -B 1000 -alrt 1000 --prefix loci -T AUTO
+	# or
+	iqtree2 -S ALN_DIR -B 1000 -alrt 1000 --prefix loci -T AUTO
+
+
+#------------------------------------------------
+# ASTRAL - supertree
+#------------------------------------------------
+
+	# Need java installed for the older versions
+	# Input file = newick file with all gene trees
+	# Simple analysis
+	
+	java -jar astral.5.5.1.jar -i filename.tre -o resultfile.tre
+
+	# -i = input 
+	# -o = output
+	
+	# For the new version can be found in the Aster package
+	# ASTER currently has no GUI. You need to run it through the command-line. In a terminal/PowerShell, go to the directory (location) where you have downloaded ASTER and issue the following command: bin/astral4. This will give you a list of options available. If you are using Windows, replace bin/astral4 with .\exe\astral4.exe.
+	
+	bin/astral4 -o OUTPUT_FILE -i INPUT_FILE 2>LOG_FILE
+	
+	# Add x number of threads
+	# -t number of threads
+	bin/astral4 -t 4 -o OUTPUT_FILE -i INPUT_FILE 2>LOG_FILE
+	
+ 	
+
+
+
+
+
+
+
+
+
+
+
+
+
