@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Developed by Martin Coetzee (University of Pretoria, Forestrh and Acgricultural Biotechonology Insitute, with assistance from ChatGPT.
+#Developed by Martin Coetzee (University of Pretoria, Forestry and Acgricultural Biotechonology Insitute), with assistance from ChatGPT.
 
 set -euo pipefail
 
