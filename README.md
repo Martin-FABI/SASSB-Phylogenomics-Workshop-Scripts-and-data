@@ -1,4 +1,4 @@
-## The following files are bash files that we will use in the Phylogenomics Workshop:
+## The following files are bash / python files that we will use in the Phylogenomics Workshop:
 
 00_00_headers_rename.sh - Remove all characters after first "|"
 
