@@ -1,6 +1,6 @@
 ## The following files are bash / python files that we will use in the Phylogenomics Workshop:
 
-00_00_headers_rename.sh - Remove all characters after first "|"
+00_headers_rename.sh - Remove all characters after first "|"
 
 01_gather_buscos.sh
 
