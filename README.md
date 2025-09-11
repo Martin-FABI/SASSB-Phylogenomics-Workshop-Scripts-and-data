@@ -17,6 +17,10 @@
 07_astral.sh - Generate a Supertree using ASTRAL or ASTER
 
 08_all_in_one_concordance_factor.sh - Generate species tree, gene trees and concordance factor.
+ Note that you will need the following:
+  1. Supermatrix (concatentated MSA file).
+  2. Single gene alignments in a seperate folder.
+  3. Partition file (can be in nexus format or RAXML format)
 
 10_msa_outlier.py - Python script that detects outliers in a MSA (this is a work in progress)
 
