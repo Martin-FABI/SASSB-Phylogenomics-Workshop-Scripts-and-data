@@ -100,11 +100,11 @@ case "$MODE" in
       --prefix "$OUTDIR/concord"
 
     # 4) Site concordance factors (likelihood-based; IQ-TREE >= 2.2.2)
-    #echo "[4/4] Computing site concordance factors (SCF; ${SCFL_SITES} sites/branch)"
-    #"$IQTREE_BIN" -te "$OUTDIR/concat.treefile" \
-    #  -p "$ALN_DIR" \
-    #  --scfl "$SCFL_SITES" \
-    #  --prefix "$OUTDIR/concord2"
+    echo "[4/4] Computing site concordance factors (SCF; ${SCFL_SITES} sites/branch)"
+    "$IQTREE_BIN" -te "$OUTDIR/concat.treefile" \
+      -p "$ALN_DIR" \
+      --scf "$SCFL_SITES" \
+      --prefix "$OUTDIR/concord2"
     ;;
 
   file)
@@ -148,11 +148,11 @@ case "$MODE" in
       --prefix "$OUTDIR/concord"
 
  #   # 4) Site concordance factors (likelihood-based; IQ-TREE >= 2.2.2)
- #   echo "[4/4] Computing site concordance factors (SCF; ${SCFL_SITES} sites/branch)"
- #   "$IQTREE_BIN" -te "$OUTDIR/concat.treefile" \
- #     -s "$ALN_FILE" \
- #     --scfl "$SCFL_SITES" \
- #     --prefix "$OUTDIR/concord2"
+    echo "[4/4] Computing site concordance factors (SCF; ${SCFL_SITES} sites/branch)"
+    "$IQTREE_BIN" -te "$OUTDIR/concat.treefile" \
+      -s "$ALN_FILE" \
+      --scf "$SCFL_SITES" \
+      --prefix "$OUTDIR/concord2"
     ;;
 
   *)
@@ -166,4 +166,4 @@ echo "Done. Key outputs in: $OUTDIR"
 echo "  - concat.treefile   : concatenation-based species tree"
 echo "  - loci.treefile     : set of locus trees"
 echo "  - concord*          : gCF outputs/logs"
-#echo "  - concord2*         : SCF outputs/logs"
+echo "  - concord2*         : SCF outputs/logs"
