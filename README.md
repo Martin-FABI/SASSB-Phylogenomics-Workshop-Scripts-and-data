@@ -21,6 +21,7 @@
   1. Supermatrix (concatentated MSA file).
   2. Single gene alignments in a seperate folder.
   3. Partition file (can be in nexus format or RAXML format)
+
 For a nice description see: https://www.robertlanfear.com/blog/files/concordance_factors.html
 
 10_msa_outlier.py - Python script that detects outliers in a MSA (this is a work in progress)
