@@ -16,6 +16,8 @@
 
 07_astral.sh - Generate a Supertree using ASTRAL or ASTER
 
+08_all_in_one_concordance_factor.sh - Generate species tree, gene trees and concordance factor.
+
 10_msa_outlier.py - Python script that detects outliers in a MSA (this is a work in progress)
 
 Note: All scripts to automate processess were developed by MPA Coetzee with the help of ChatGPT 5 (Thinking module)
