@@ -31,7 +31,7 @@ if ! find "$FILTER_DIR" -type f \( -iname '*.fa' -o -iname '*.faa' -o -iname '*.
 fi
 
 # Run IQ-TREE on the directory of alignments
-"${IQTREE_BIN}" -p "$FILTER_DIR" -m MFP -bb 1000 -alrt 1000 -T "${THREADS}" -pre "$OUTROOT"
+"${IQTREE_BIN}" -p "$FILTER_DIR" -m MFP -B 1000 -alrt 1000 -T "${THREADS}" -pre "$OUTROOT"
 #For a quick check, use below
 #"${IQTREE_BIN}" -S "$FILTER_DIR" -m MFP -T "${THREADS}" -pre "$OUTROOT"
 
